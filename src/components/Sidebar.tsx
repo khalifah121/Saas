@@ -63,17 +63,27 @@ interface AccordionGroupProps {
   activeId: string;
   isCollapsed: boolean;
   onSelect: (id: string) => void;
+  onExpand: () => void;
 }
 
-function AccordionGroup({ item, activeId, isCollapsed, onSelect }: AccordionGroupProps) {
+function AccordionGroup({ item, activeId, isCollapsed, onSelect, onExpand }: AccordionGroupProps) {
   const [isOpen, setIsOpen] = useState(false);
   const hasActiveChild = item.children.some((child) => child.id === activeId);
+
+  function handleClick() {
+    if (isCollapsed) {
+      onExpand();
+      setIsOpen(true);
+    } else {
+      setIsOpen((prev) => !prev);
+    }
+  }
 
   return (
     <div>
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={handleClick}
         title={isCollapsed ? item.label : undefined}
         className={[
           "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150",
@@ -127,7 +137,7 @@ export default function Sidebar({ activeId, onSelect }: SidebarProps) {
     <aside
       className={[
         "flex h-screen flex-col border-r bg-white transition-[width] duration-300 dark:border-slate-700 dark:bg-slate-900",
-        isCollapsed ? "w-16 border-slate-200" : "w-64 border-slate-200",
+        isCollapsed ? "w-16 border-slate-200" : "w-48 border-slate-200 sm:w-64",
       ].join(" ")}
     >
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4 dark:border-slate-700">
@@ -163,6 +173,7 @@ export default function Sidebar({ activeId, onSelect }: SidebarProps) {
               activeId={activeId}
               isCollapsed={isCollapsed}
               onSelect={onSelect}
+              onExpand={() => setIsCollapsed(false)}
             />
           ) : (
             <NavLink
