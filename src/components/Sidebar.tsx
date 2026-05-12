@@ -186,12 +186,12 @@ export default function Sidebar({ activeId, onSelect }: SidebarProps) {
     <aside
       className={[
         "flex h-screen flex-col border-r border-slate-200 bg-white transition-[width] duration-300 dark:border-slate-700 dark:bg-slate-900",
-        isCollapsed ? "w-16" : "w-44 sm:w-56",
+        isCollapsed ? "w-16" : "w-36 sm:w-56",
       ].join(" ")}
     >
       <div className="flex items-center justify-between border-b border-slate-200 px-3 py-4 dark:border-slate-700">
         {!isCollapsed && (
-          <span className="text-base font-bold tracking-wide text-slate-900 dark:text-white sm:text-lg">MyApp</span>
+          <span className="truncate text-base font-bold tracking-wide text-slate-900 dark:text-white sm:text-lg">MyApp</span>
         )}
         <div className={["flex items-center gap-1", isCollapsed ? "w-full flex-col justify-center" : ""].join(" ")}>
           <button
