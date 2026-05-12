@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useTheme } from "../context/ThemeContext";
 
 type NavItem =
@@ -29,6 +30,8 @@ const NAV_ITEMS: NavItem[] = [
   { id: "settings", label: "Settings", icon: "⚙️", href: "#settings" },
   { id: "help",     label: "Help",     icon: "❓", href: "#help"     },
 ];
+
+const COLLAPSED_WIDTH = 64;
 
 interface NavLinkProps {
   item: NavItem & { href: string };
@@ -63,25 +66,45 @@ interface AccordionGroupProps {
   activeId: string;
   isCollapsed: boolean;
   onSelect: (id: string) => void;
-  onExpand: () => void;
 }
 
-function AccordionGroup({ item, activeId, isCollapsed, onSelect, onExpand }: AccordionGroupProps) {
+function AccordionGroup({ item, activeId, isCollapsed, onSelect }: AccordionGroupProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [popoverTop, setPopoverTop] = useState(0);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const hasActiveChild = item.children.some((child) => child.id === activeId);
+
+  useEffect(() => {
+    if (!isOpen || !isCollapsed) return;
+    function onOutsideClick(e: MouseEvent) {
+      const target = e.target as Node;
+      if (buttonRef.current?.contains(target) || popoverRef.current?.contains(target)) return;
+      setIsOpen(false);
+    }
+    document.addEventListener("mousedown", onOutsideClick);
+    return () => document.removeEventListener("mousedown", onOutsideClick);
+  }, [isOpen, isCollapsed]);
 
   function handleClick() {
     if (isCollapsed) {
-      onExpand();
-      setIsOpen(true);
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) setPopoverTop(rect.top);
+      setIsOpen((prev) => !prev);
     } else {
       setIsOpen((prev) => !prev);
     }
   }
 
+  function handleChildSelect(id: string) {
+    onSelect(id);
+    setIsOpen(false);
+  }
+
   return (
     <div>
       <button
+        ref={buttonRef}
         type="button"
         onClick={handleClick}
         title={isCollapsed ? item.label : undefined}
@@ -114,11 +137,37 @@ function AccordionGroup({ item, activeId, isCollapsed, onSelect, onExpand }: Acc
                 isActive={activeId === child.id}
                 isCollapsed={false}
                 depth={1}
-                onClick={onSelect}
+                onClick={handleChildSelect}
               />
             );
           })}
         </div>
+      )}
+
+      {isCollapsed && isOpen && createPortal(
+        <div
+          ref={popoverRef}
+          style={{ top: popoverTop, left: COLLAPSED_WIDTH + 6 }}
+          className="fixed z-50 min-w-44 rounded-lg border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-800"
+        >
+          <p className="mb-1 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            {item.label}
+          </p>
+          {item.children.map((child) => {
+            if (!child.href) return null;
+            return (
+              <NavLink
+                key={child.id}
+                item={child as NavItem & { href: string }}
+                isActive={activeId === child.id}
+                isCollapsed={false}
+                depth={0}
+                onClick={handleChildSelect}
+              />
+            );
+          })}
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -136,13 +185,13 @@ export default function Sidebar({ activeId, onSelect }: SidebarProps) {
   return (
     <aside
       className={[
-        "flex h-screen flex-col border-r bg-white transition-[width] duration-300 dark:border-slate-700 dark:bg-slate-900",
-        isCollapsed ? "w-16 border-slate-200" : "w-48 border-slate-200 sm:w-64",
+        "flex h-screen flex-col border-r border-slate-200 bg-white transition-[width] duration-300 dark:border-slate-700 dark:bg-slate-900",
+        isCollapsed ? "w-16" : "w-44 sm:w-56",
       ].join(" ")}
     >
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4 dark:border-slate-700">
+      <div className="flex items-center justify-between border-b border-slate-200 px-3 py-4 dark:border-slate-700">
         {!isCollapsed && (
-          <span className="text-lg font-bold tracking-wide text-slate-900 dark:text-white">MyApp</span>
+          <span className="text-base font-bold tracking-wide text-slate-900 dark:text-white sm:text-lg">MyApp</span>
         )}
         <div className={["flex items-center gap-1", isCollapsed ? "w-full flex-col justify-center" : ""].join(" ")}>
           <button
@@ -173,7 +222,6 @@ export default function Sidebar({ activeId, onSelect }: SidebarProps) {
               activeId={activeId}
               isCollapsed={isCollapsed}
               onSelect={onSelect}
-              onExpand={() => setIsCollapsed(false)}
             />
           ) : (
             <NavLink
