@@ -25,32 +25,34 @@ const TOP_PAGES = [
 
 export default function OverviewPage() {
   return (
-    <div className="flex flex-col gap-6 p-4 sm:gap-8 sm:p-8">
+    <div className="flex flex-col gap-4 p-3 sm:gap-6 sm:p-6 lg:p-8">
 
       <div>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Analytics Overview</h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Last 7 days · Updated just now</p>
+        <h1 className="text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">Analytics Overview</h1>
+        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 sm:mt-1 sm:text-sm">Last 7 days · Updated just now</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      {/* 1 col → 2 col → 4 col */}
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         {STATS.map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+          <div key={stat.label} className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {stat.label}
             </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">{stat.value}</p>
-            <p className={`mt-1 text-sm font-medium ${stat.positive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
+            <p className="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white sm:mt-2 sm:text-3xl">{stat.value}</p>
+            <p className={`mt-1 text-xs font-medium sm:text-sm ${stat.positive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
               {stat.change} vs last week
             </p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:mb-6">
+      {/* Bar chart */}
+      <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:mb-6 sm:text-sm">
           Daily Sessions
         </h2>
-        <div className="flex h-32 items-end gap-2 sm:h-36 sm:gap-3">
+        <div className="flex h-28 items-end gap-1.5 sm:h-36 sm:gap-3">
           {DAILY_SESSIONS.map((height, i) => (
             <div
               key={DAYS[i]}
@@ -59,36 +61,37 @@ export default function OverviewPage() {
             />
           ))}
         </div>
-        <div className="mt-2 flex gap-2 sm:gap-3">
+        <div className="mt-2 flex gap-1.5 sm:gap-3">
           {DAYS.map((day) => (
             <div key={day} className="flex-1 text-center">
-              <span className="text-xs text-slate-400 dark:text-slate-500">{day}</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 sm:text-xs">{day}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      {/* Top pages */}
+      <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:mb-4 sm:text-sm">
           Top Pages
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[420px] text-sm">
+          <table className="w-full min-w-85 text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wider text-slate-400 dark:border-slate-700 dark:text-slate-500">
-                <th className="pb-3 font-medium">Page</th>
-                <th className="pb-3 font-medium">Views</th>
-                <th className="pb-3 font-medium">Bounce</th>
-                <th className="pb-3 font-medium">Avg. Time</th>
+              <tr className="border-b border-slate-200 text-left text-[10px] uppercase tracking-wider text-slate-400 dark:border-slate-700 dark:text-slate-500 sm:text-xs">
+                <th className="pb-2 font-medium sm:pb-3">Page</th>
+                <th className="pb-2 font-medium sm:pb-3">Views</th>
+                <th className="pb-2 font-medium sm:pb-3">Bounce</th>
+                <th className="pb-2 font-medium sm:pb-3">Avg. Time</th>
               </tr>
             </thead>
             <tbody>
               {TOP_PAGES.map((row) => (
                 <tr key={row.page} className="border-b border-slate-100 text-slate-600 last:border-0 dark:border-slate-700/50 dark:text-slate-300">
-                  <td className="py-3 font-mono text-xs text-indigo-600 dark:text-indigo-400 sm:text-sm">{row.page}</td>
-                  <td className="py-3">{row.views}</td>
-                  <td className="py-3">{row.bounce}</td>
-                  <td className="py-3">{row.avgTime}</td>
+                  <td className="py-2 font-mono text-[10px] text-indigo-600 dark:text-indigo-400 sm:py-3 sm:text-xs">{row.page}</td>
+                  <td className="py-2 text-xs sm:py-3 sm:text-sm">{row.views}</td>
+                  <td className="py-2 text-xs sm:py-3 sm:text-sm">{row.bounce}</td>
+                  <td className="py-2 text-xs sm:py-3 sm:text-sm">{row.avgTime}</td>
                 </tr>
               ))}
             </tbody>

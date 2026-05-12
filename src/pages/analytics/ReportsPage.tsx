@@ -27,7 +27,7 @@ const STATUS_STYLES: Record<ReportStatus, string> = {
 
 function StatusBadge({ status }: { status: ReportStatus }) {
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[status]}`}>
+    <span className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[status]}`}>
       {status}
     </span>
   );
@@ -35,12 +35,15 @@ function StatusBadge({ status }: { status: ReportStatus }) {
 
 export default function ReportsPage() {
   return (
-    <div className="flex flex-col gap-6 p-4 sm:gap-8 sm:p-8">
+    <div className="flex flex-col gap-4 p-3 sm:gap-6 sm:p-6 lg:p-8">
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Reports</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Manage scheduled and on-demand reports</p>
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">Reports</h1>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 sm:mt-1 sm:text-sm">
+            Manage scheduled and on-demand reports
+          </p>
         </div>
         <button
           type="button"
@@ -50,32 +53,39 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+      {/* Summary cards */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {[
-          { label: "Total Reports", value: REPORTS.length },
-          { label: "Running Now",   value: REPORTS.filter((r) => r.status === "Running").length },
-          { label: "Failed",        value: REPORTS.filter((r) => r.status === "Failed").length },
+          { label: "Total",   full: "Total Reports", value: REPORTS.length },
+          { label: "Running", full: "Running Now",   value: REPORTS.filter((r) => r.status === "Running").length },
+          { label: "Failed",  full: "Failed",        value: REPORTS.filter((r) => r.status === "Failed").length },
         ].map((card) => (
-          <div key={card.label} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{card.label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">{card.value}</p>
+          <div key={card.label} className="rounded-xl border border-slate-200 bg-white p-2.5 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+            <p className="truncate text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400 sm:text-xs sm:tracking-wider">
+              <span className="sm:hidden">{card.label}</span>
+              <span className="hidden sm:inline">{card.full}</span>
+            </p>
+            <p className="mt-1 text-xl font-bold text-slate-900 dark:text-white sm:mt-2 sm:text-3xl">{card.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 md:hidden">
+      {/* Mobile cards */}
+      <div className="flex flex-col gap-2.5 md:hidden">
         {REPORTS.map((report) => (
-          <div key={report.id} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+          <div key={report.id} className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-4">
             <div className="flex items-start justify-between gap-2">
-              <p className="font-medium text-slate-900 dark:text-white">{report.name}</p>
+              <p className="text-sm font-medium leading-snug text-slate-900 dark:text-white">{report.name}</p>
               <StatusBadge status={report.status} />
             </div>
-            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-              <span>Type: {report.type}</span>
-              <span>Last run: {report.lastRun}</span>
-              <span>Owner: {report.owner}</span>
+            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+              <span>{report.type}</span>
+              <span>·</span>
+              <span>{report.lastRun}</span>
+              <span>·</span>
+              <span>{report.owner}</span>
             </div>
-            <div className="mt-3 flex gap-4 border-t border-slate-100 pt-3 dark:border-slate-700">
+            <div className="mt-2.5 flex gap-4 border-t border-slate-100 pt-2.5 dark:border-slate-700">
               <button type="button" className="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">View</button>
               <button type="button" className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">Run</button>
             </div>
@@ -83,30 +93,31 @@ export default function ReportsPage() {
         ))}
       </div>
 
+      {/* Desktop table */}
       <div className="hidden overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-160 text-sm">
             <thead className="border-b border-slate-200 dark:border-slate-700">
               <tr className="text-left text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                <th className="px-6 py-4 font-medium">Report Name</th>
-                <th className="px-6 py-4 font-medium">Type</th>
-                <th className="px-6 py-4 font-medium">Last Run</th>
-                <th className="px-6 py-4 font-medium">Next Run</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Owner</th>
-                <th className="px-6 py-4 font-medium">Actions</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Report Name</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Type</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Last Run</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Next Run</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Status</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Owner</th>
+                <th className="px-4 py-3 font-medium lg:px-6 lg:py-4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {REPORTS.map((report) => (
                 <tr key={report.id} className="border-b border-slate-100 transition-colors last:border-0 hover:bg-slate-50 dark:border-slate-700/50 dark:hover:bg-slate-700/30">
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{report.name}</td>
-                  <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{report.type}</td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{report.lastRun}</td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{report.nextRun}</td>
-                  <td className="px-6 py-4"><StatusBadge status={report.status} /></td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{report.owner}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3 font-medium text-slate-900 dark:text-white lg:px-6 lg:py-4">{report.name}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400 lg:px-6 lg:py-4">{report.type}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300 lg:px-6 lg:py-4">{report.lastRun}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300 lg:px-6 lg:py-4">{report.nextRun}</td>
+                  <td className="px-4 py-3 lg:px-6 lg:py-4"><StatusBadge status={report.status} /></td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300 lg:px-6 lg:py-4">{report.owner}</td>
+                  <td className="px-4 py-3 lg:px-6 lg:py-4">
                     <div className="flex gap-3">
                       <button type="button" className="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">View</button>
                       <button type="button" className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">Run</button>

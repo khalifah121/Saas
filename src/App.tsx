@@ -29,7 +29,7 @@ export default function App() {
   return (
     <div className="flex h-screen bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-white">
       <Sidebar activeId={activeId} onSelect={setActiveId} />
-      <main className="flex-1 overflow-y-auto">
+      <main className="min-w-0 flex-1 overflow-y-auto">
         {activePage}
       </main>
     </div>

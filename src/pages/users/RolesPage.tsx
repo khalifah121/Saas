@@ -44,7 +44,7 @@ const ROLES: Role[] = [
 
 function PermissionTag({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+    <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-300 sm:gap-1.5 sm:px-2 sm:py-1 sm:text-xs">
       <span className="text-emerald-500 dark:text-emerald-400">✓</span>
       {label}
     </span>
@@ -53,12 +53,15 @@ function PermissionTag({ label }: { label: string }) {
 
 export default function RolesPage() {
   return (
-    <div className="flex flex-col gap-6 p-4 sm:gap-8 sm:p-8">
+    <div className="flex flex-col gap-4 p-3 sm:gap-6 sm:p-6 lg:p-8">
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Roles & Permissions</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Define what each role can access in the app</p>
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">Roles & Permissions</h1>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 sm:mt-1 sm:text-sm">
+            Define what each role can access in the app
+          </p>
         </div>
         <button
           type="button"
@@ -68,41 +71,57 @@ export default function RolesPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+      {/* Summary strip — 2 cols on mobile, 4 on sm+ */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
         {ROLES.map((role) => (
-          <div key={role.id} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
-            <div className="flex items-center gap-2">
-              <span className={`h-2.5 w-2.5 rounded-full ${role.color}`} />
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{role.name}</p>
+          <div key={role.id} className="rounded-xl border border-slate-200 bg-white p-2.5 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
+            <div className="flex items-center gap-1.5">
+              <span className={`h-2 w-2 shrink-0 rounded-full sm:h-2.5 sm:w-2.5 ${role.color}`} />
+              <p className="truncate text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400 sm:text-xs sm:tracking-wider">
+                {role.name}
+              </p>
             </div>
-            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">{role.userCount}</p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">{role.userCount === 1 ? "user" : "users"}</p>
+            <p className="mt-1 text-xl font-bold text-slate-900 dark:text-white sm:mt-2 sm:text-3xl">
+              {role.userCount}
+            </p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 sm:text-xs">
+              {role.userCount === 1 ? "user" : "users"}
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* Role detail cards — 1 col on mobile, 2 on sm+ */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         {ROLES.map((role) => (
-          <div key={role.id} className="flex flex-col rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+          <div key={role.id} className="flex flex-col rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+            {/* Card header */}
             <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white ${role.color}`}>
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white sm:h-9 sm:w-9 ${role.color}`}>
                   {role.name[0]}
                 </span>
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">{role.name}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{role.userCount} {role.userCount === 1 ? "user" : "users"}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                    {role.userCount} {role.userCount === 1 ? "user" : "users"}
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
-                className="rounded-md px-2.5 py-1 text-xs text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+                className="rounded-md px-2 py-1 text-xs text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
               >
                 Edit
               </button>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{role.description}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
+
+            <p className="mt-2.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:mt-3">
+              {role.description}
+            </p>
+
+            {/* Permission tags wrap naturally at any width */}
+            <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
               {role.permissions.map((perm) => (
                 <PermissionTag key={perm} label={perm} />
               ))}
