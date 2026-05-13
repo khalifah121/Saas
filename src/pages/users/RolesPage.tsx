@@ -54,8 +54,6 @@ function PermissionTag({ label }: { label: string }) {
 export default function RolesPage() {
   return (
     <div className="flex flex-col gap-4 p-3 sm:gap-6 sm:p-6 lg:p-8">
-
-      {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">Roles & Permissions</h1>
@@ -71,7 +69,6 @@ export default function RolesPage() {
         </button>
       </div>
 
-      {/* Summary strip — 2 cols on mobile, 4 on sm+ */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
         {ROLES.map((role) => (
           <div key={role.id} className="rounded-xl border border-slate-200 bg-white p-2.5 dark:border-slate-700 dark:bg-slate-800 sm:p-5">
@@ -91,11 +88,9 @@ export default function RolesPage() {
         ))}
       </div>
 
-      {/* Role detail cards — 1 col on mobile, 2 on sm+ */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         {ROLES.map((role) => (
           <div key={role.id} className="flex flex-col rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-            {/* Card header */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2.5 sm:gap-3">
                 <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white sm:h-9 sm:w-9 ${role.color}`}>
@@ -120,7 +115,6 @@ export default function RolesPage() {
               {role.description}
             </p>
 
-            {/* Permission tags wrap naturally at any width */}
             <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
               {role.permissions.map((perm) => (
                 <PermissionTag key={perm} label={perm} />
